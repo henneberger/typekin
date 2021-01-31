@@ -74,7 +74,7 @@ interface StFooRef extends StFooAFragment, StFooABFragment, StFooCFragment {}
 ```
 
 This can be extended to non-trivial examples:
-[tests/src/main/java/typekin/tests/example/TypekinAnnotation.java](tests/src/main/java/typekin/tests/example/TypekinAnnotation.java)
+[tests/src/main/java/typekin/tests/example/FooExample.java](tests/src/main/java/typekin/tests/example/FooExample.java)
 
 ### Contributions
 This work is based on https://github.com/tlamr/stjava
