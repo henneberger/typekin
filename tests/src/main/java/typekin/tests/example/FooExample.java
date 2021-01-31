@@ -8,76 +8,77 @@ import typekin.annotation.TypeOf;
 
 public class FooExample {
   @Model(clazz = Foo.class)
-  class Foo implements StFooModel {
-    public String getA(){return null;}
-    public String getB(){return null;}
-    public String getC(){return null;}
-    public List<? extends StBarRef> getBar(){return null;}
+  abstract class Foo implements StFooModel {
+    public abstract String getA();
+    public abstract String getB();
+    public abstract String getC();
+    public abstract List<? extends StBarRef> getBar();
+    public abstract void test();
   }
   @Model(clazz = Bar.class)
-  class Bar implements StBarModel {
-    public String getA(){return null;}
-    public String getB(){return null;}
-    public StFooRef getFoo(){return null;}
+  abstract class Bar implements StBarModel {
+    public abstract String getA();
+    public abstract String getB();
+    public abstract StFooRef getFoo();
   }
   @TypeOf(clazz = Foo.class)
-  public interface FooAInput {
+  public interface FooAFragment {
     String getA();
-    List<? extends BarInput> getBar();
+    List<? extends BarFragment> getBar();
   }
   @TypeOf(clazz = Foo.class)
-  public interface FooABInput {
+  public interface FooABFragment {
     String getA();
     String getB();
-    List<? extends BarInput> getBar();
+    List<? extends BarFragment> getBar();
   }
   @TypeOf(clazz = Foo.class)
-  public interface FooCInput {
+  public interface FooCFragment {
     String getC();
   }
   @TypeOf(clazz = Bar.class)
-  public interface BarInput {
+  public interface BarFragment {
     String getA();
   }
   //compile error on Model, D is not a property of Foo
   //@TypeOf(clazz = Foo.class)
-  //public interface FooDInput {
+  //public interface FooDFragment {
   //  String getD();
   //}
 
   //You add `implements St{name}`
   @StructuralType(clazz = Foo.class)
-  public static class FooAFragment implements StFooAFragment {
+  public static class FooAData implements StFooAData {
     public String getA() { return "A"; }
-    public List<BarFragment> getBar() {return new ArrayList<>();}
+    public List<BarData> getBar() {return new ArrayList<>();}
     public String extraParam() {return "extra";}
   }
   @StructuralType(clazz = Foo.class)
-  public static class FooABFragment implements StFooABFragment {
+  public static class FooABData implements StFooABData {
     public String getA() { return "A"; }
     public String getB() { return "B"; }
-    public List<BarFragment> getBar() {return new ArrayList<>();}
+    public List<BarData> getBar() {return new ArrayList<>();}
   }
   @StructuralType(clazz = Foo.class)
-  public static class FooCFragment implements StFooCFragment {
+  public static class FooCData implements StFooCData {
     public String getC() { return "C"; }
   }
   @StructuralType(clazz = Bar.class)
-  public static class BarFragment implements StBarFragment {
+  public static class BarData implements StBarData {
     public String getA() { return "A"; }
   }
 
   public static void main(String[] args) {
-    print(new FooAFragment());
-    print(new FooABFragment());
-    //print(new FooCFragment()); //compile error
+    print(new FooAData());
+    print(new FooABData());
+    //print(new FooCData()); //compile error
   }
 
-  public static void print(FooAInput fooAInput) {
-    System.out.println(fooAInput.getA());
-    System.out.println(fooAInput.getBar().get(0).getA());
-    //System.out.println(fooAInput.getBar().get(0).getB()); //compile error
-    //System.out.println(fooInput.getB()); //compile error
-    //System.out.println(fooInput.getC()); //compile error
+  public static void print(FooAFragment foo) {
+    System.out.println(foo.getA());
+    System.out.println(foo.getBar().get(0).getA());
+    //System.out.println(foo.getBar().get(0).getB()); //compile error
+    //System.out.println(foo.getB()); //compile error
+    //System.out.println(foo.getC()); //compile error
   }
 }

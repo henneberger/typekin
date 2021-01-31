@@ -1,11 +1,12 @@
 package typekin.processor;
 
+import static typekin.processor.ModelProcessor.getClassParam;
+
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.tools.javac.code.Symbol;
-import javax.lang.model.type.MirroredTypeException;
 import typekin.annotation.StructuralType;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -81,24 +82,6 @@ public class StructuralTypeProcessor extends AbstractProcessor {
     }
 
     return true;
-  }
-
-  private TypeMirror getClassParam(StructuralType annotation) {
-    try {
-      annotation.clazz();
-    } catch (MirroredTypeException mte) {
-      return mte.getTypeMirror();
-    }
-    return null;
-  }
-
-  private TypeMirror getClassParam(TypeOf annotation) {
-    try {
-      annotation.clazz();
-    } catch (MirroredTypeException mte) {
-      return mte.getTypeMirror();
-    }
-    return null;
   }
 
   private void generateCode(TypeElement typeElement) throws IOException {
