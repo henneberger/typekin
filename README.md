@@ -10,26 +10,26 @@ and pairs them with the @StructuralType output type.
 ```java
 class Main {
   public static void main(String[] args) {
-    RunFragment runFragment = getRunFragment();
-    printRun(runFragment);
+    FooFragment fooFragment = getFooFragment();
+    print(fooFragment);
   }
 
-  public void printRun(RunInput runInput) {
-    System.out.println(runInput.getUuid());
+  public void print(FooInput fooInput) {
+    System.out.println(fooInput.getUuid());
   }
 
-  public RunFragment getRunFragment() {
-    return new RunFragment();
+  public FooFragment getFooFragment() {
+    return new FooFragment();
   }
 
-  @TypeOf(clazz = "Run")
-  public interface RunInput {
+  @TypeOf(clazz = "Foo")
+  public interface FooInput {
     UUID getUuid();
   }
 
   //You add `implements St{name}`
-  @StructuralType(clazz = "Run")
-  public class RunFragment implements StRunFragment {
+  @StructuralType(clazz = "Foo")
+  public class FooFragment implements StFooFragment {
     public UUID getUuid() {
       return uuid;
     }
@@ -37,7 +37,7 @@ class Main {
 }
 
 //This gets generated:
-public interface StRunFragment extends RunFragment {}
+public interface StFooFragment extends FooFragment {}
 ```
 
 This can be extended to non-trivial examples:
