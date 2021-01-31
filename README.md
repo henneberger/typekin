@@ -15,36 +15,36 @@ public class Main {
     abstract String getC();
   }
 
-  @TypeOf(clazz = "FooModel")
+  @TypeOf(clazz = FooModel.class)
   public interface FooAInput {
     String getA();
   }
-  @TypeOf(clazz = "FooModel")
+  @TypeOf(clazz = FooModel.class)
   public interface FooABInput {
     String getA();
     String getB();
   }
-  @TypeOf(clazz = "FooModel")
+  @TypeOf(clazz = FooModel.class)
   public interface FooCInput {
     String getC();
   }
   //compile error, D is not a property of the model
-  //@TypeOf(clazz = "FooModel")
+  //@TypeOf(clazz = FooModel.class)
   //public interface FooDInput {
   //  String getD();
   //}
 
   //You add `implements St{name}`
-  @StructuralType(clazz = "FooModel")
+  @StructuralType(clazz = FooModel.class)
   public static class FooAFragment implements StFooAFragment {
     public String getA() { return "A"; }
   }
-  @StructuralType(clazz = "FooModel")
+  @StructuralType(clazz = FooModel.class)
   public static class FooABFragment implements StFooABFragment {
     public String getA() { return "A"; }
     public String getB() { return "B"; }
   }
-  @StructuralType(clazz = "FooModel")
+  @StructuralType(clazz = FooModel.class)
   public static class FooCFragment implements StFooCFragment {
     public String getC() { return "C"; }
   }

@@ -5,6 +5,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.tools.javac.code.Symbol;
+import javax.lang.model.type.MirroredTypeException;
 import typekin.annotation.StructuralType;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -80,7 +81,22 @@ public class StructuralTypeProcessor extends AbstractProcessor {
 
         return true;
     }
-
+    private TypeMirror getClassParam(StructuralType annotation) {
+        try {
+            annotation.clazz();
+        } catch(MirroredTypeException mte) {
+            return mte.getTypeMirror();
+        }
+        return null;
+    }
+    private TypeMirror getClassParam(TypeOf annotation) {
+        try {
+            annotation.clazz();
+        } catch(MirroredTypeException mte) {
+            return mte.getTypeMirror();
+        }
+        return null;
+    }
     private void generateCode(TypeElement typeElement) throws IOException {
         String name = "St" + typeElement.getSimpleName().toString();
 
@@ -97,12 +113,11 @@ public class StructuralTypeProcessor extends AbstractProcessor {
             TypeElement thisType = entry.getValue();
 
             //Ignore different clazz refs
-            //TODO: Accessing 'Class' objects are difficult here. Figure out later.
-            String inputClazz = thisType.getAnnotation(TypeOf.class).clazz();
+            TypeMirror inputClazz = getClassParam(thisType.getAnnotation(TypeOf.class));
             if (typeElement.getAnnotation(StructuralType.class) == null) {
                 continue;
             }
-            String structuralClazz = typeElement.getAnnotation(StructuralType.class).clazz();
+            TypeMirror structuralClazz = getClassParam(typeElement.getAnnotation(StructuralType.class));
             if (!structuralClazz.equals(inputClazz)) {
                 continue;
             }

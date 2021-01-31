@@ -38,18 +38,18 @@ public class TypekinAnnotation {
   }
 
   //Todo: Provide validation that these object conform to the model
-  @TypeOf(clazz = "Run")
+  @TypeOf(clazz = Model.Run.class)
   public interface RunOnlyFragmentInput {
     UUID getUuid();
     Instant getCreatedAt();
   }
-  @TypeOf(clazz = "Run")
+  @TypeOf(clazz = Model.Run.class)
   public interface RunWithDatasetFragmentInput {
     UUID getUuid();
     Instant getCreatedAt();
     List<? extends DatasetInputFragment> getInputs();
   }
-  @TypeOf(clazz = "Dataset")
+  @TypeOf(clazz = Model.Dataset.class)
   interface DatasetInputFragment {
     UUID getUuid();
   }
@@ -77,7 +77,7 @@ public class TypekinAnnotation {
     }
 
     //You add `implements St{name}`, annotation processor will generate
-    @StructuralType(clazz = "Run")
+    @StructuralType(clazz = Model.Run.class)
     public class RunFragment implements StRunFragment {
       UUID uuid;
       Instant createdAt;
@@ -89,7 +89,7 @@ public class TypekinAnnotation {
       }
     }
 
-    @StructuralType(clazz = "Run")
+    @StructuralType(clazz = Model.Run.class)
     public class RunWithDatasetFragment implements StRunWithDatasetFragment {
       UUID uuid;
       Instant createdAt;
@@ -106,7 +106,7 @@ public class TypekinAnnotation {
       }
     }
 
-    @StructuralType(clazz = "Dataset")
+    @StructuralType(clazz = Model.Dataset.class)
     class DatasetFragment implements StDatasetFragment {
       UUID uuid;
 
