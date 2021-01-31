@@ -53,17 +53,26 @@ public class Typekin {
   }
 
   //The type reference for the model
-  class Model {
-    abstract class Run {
-      abstract UUID getUuid();
-      abstract Instant getCreatedAt();
-      abstract List<? extends DataTypeRef> getInputs();
+  // Relationships implement a St{name}Ref
+  //
+  public static class Model {
+//    @Model(clazz = Run.class)
+    public class Run implements StRun {
+      public UUID getUuid(){return null;}
+      public Instant getCreatedAt(){return null;}
+      public List<? extends StDatasetRef> getInputs(){return null;}
     }
 
-    abstract class Dataset {
-      abstract UUID getUuid();
+    public class Dataset implements StDataset {
+      public UUID getUuid(){return null;}
+      public StRunRef getRun(){return null;}
     }
   }
+
+  interface StRunRef extends DatasetInputFragment{}
+  interface StDatasetRef extends DatasetInputFragment{}
+  interface StRun extends RunOnlyFragmentInput, RunWithDatasetFragmentInput{}
+  interface StDataset extends DatasetInputFragment{}
 
   class RunDao {
     public RunFragment getRunFragment() {
@@ -108,7 +117,6 @@ public class Typekin {
       }
     }
 
-    @Value
     class DatasetFragment implements StDatasetrFragment, DatasetInputFragment {
       UUID uuid;
 

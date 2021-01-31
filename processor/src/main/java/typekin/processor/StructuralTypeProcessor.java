@@ -35,135 +35,141 @@ import typekin.annotation.TypeOf;
 @AutoService(Processor.class)
 public class StructuralTypeProcessor extends AbstractProcessor {
 
-    private Types typeUtils;
-    private Elements elementUtils;
-    private Filer filer;
-    private Messager messager;
-    private Map<TypeMirror, TypeElement> interfaces = new HashMap<>();
+  private Types typeUtils;
+  private Elements elementUtils;
+  private Filer filer;
+  private Messager messager;
+  private Map<TypeMirror, TypeElement> interfaces = new HashMap<>();
 
-    @Override
-    public synchronized void init(ProcessingEnvironment processingEnv) {
-        super.init(processingEnv);
-        typeUtils = processingEnv.getTypeUtils();
-        elementUtils = processingEnv.getElementUtils();
-        filer = processingEnv.getFiler();
-        messager = processingEnv.getMessager();
+  @Override
+  public synchronized void init(ProcessingEnvironment processingEnv) {
+    super.init(processingEnv);
+    typeUtils = processingEnv.getTypeUtils();
+    elementUtils = processingEnv.getElementUtils();
+    filer = processingEnv.getFiler();
+    messager = processingEnv.getMessager();
+  }
+
+  private List<? extends Element> allMembers(TypeElement typeElement) {
+    return elementUtils.getAllMembers(typeElement).stream()
+        .filter(e -> ((Element) e).getKind() == ElementKind.METHOD)
+        .filter(e -> !"java.lang.Object"
+            .equals(((Symbol.MethodSymbol) e).owner.getQualifiedName().toString()))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
+    for (Element element : roundEnvironment.getElementsAnnotatedWith(TypeOf.class)) {
+      TypeElement typeElement = (TypeElement) element;
+      interfaces.put(typeElement.asType(), typeElement);
     }
 
-    private List<? extends Element> allMembers(TypeElement typeElement) {
-        return elementUtils.getAllMembers(typeElement).stream()
-                .filter(e -> ((Element) e).getKind() == ElementKind.METHOD)
-                .filter(e -> !"java.lang.Object".equals(((Symbol.MethodSymbol)e).owner.getQualifiedName().toString()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        for (Element element : roundEnvironment.getElementsAnnotatedWith(TypeOf.class)) {
-            TypeElement typeElement = (TypeElement) element;
-            interfaces.put(typeElement.asType(), typeElement);
-        }
-
-        for (Element element : roundEnvironment.getElementsAnnotatedWith(StructuralType.class)) {
-            if (element.getKind() != ElementKind.CLASS) {
-                messager.printMessage(Diagnostic.Kind.ERROR, "Can be applied to class.");
-                return true;
-            }
-
-            TypeElement typeElement = (TypeElement) element;
-            messager.printMessage(Diagnostic.Kind.NOTE, typeElement.getQualifiedName());
-            try {
-                generateCode(typeElement);
-            } catch (IOException e) {
-                messager.printMessage(Diagnostic.Kind.ERROR, e.getMessage());
-            }
-        }
-
+    for (Element element : roundEnvironment.getElementsAnnotatedWith(StructuralType.class)) {
+      if (element.getKind() != ElementKind.CLASS) {
+        messager.printMessage(Diagnostic.Kind.ERROR, "Can be applied to class.");
         return true;
+      }
+
+      TypeElement typeElement = (TypeElement) element;
+      messager.printMessage(Diagnostic.Kind.NOTE, typeElement.getQualifiedName());
+      try {
+        generateCode(typeElement);
+      } catch (IOException e) {
+        messager.printMessage(Diagnostic.Kind.ERROR, e.getMessage());
+      }
     }
-    private TypeMirror getClassParam(StructuralType annotation) {
-        try {
-            annotation.clazz();
-        } catch(MirroredTypeException mte) {
-            return mte.getTypeMirror();
-        }
-        return null;
+
+    return true;
+  }
+
+  private TypeMirror getClassParam(StructuralType annotation) {
+    try {
+      annotation.clazz();
+    } catch (MirroredTypeException mte) {
+      return mte.getTypeMirror();
     }
-    private TypeMirror getClassParam(TypeOf annotation) {
-        try {
-            annotation.clazz();
-        } catch(MirroredTypeException mte) {
-            return mte.getTypeMirror();
-        }
-        return null;
+    return null;
+  }
+
+  private TypeMirror getClassParam(TypeOf annotation) {
+    try {
+      annotation.clazz();
+    } catch (MirroredTypeException mte) {
+      return mte.getTypeMirror();
     }
-    private void generateCode(TypeElement typeElement) throws IOException {
-        String name = "St" + typeElement.getSimpleName().toString();
+    return null;
+  }
 
-        TypeSpec.Builder typeSpecBuilder = TypeSpec.interfaceBuilder(name)
-                .addModifiers(Modifier.PUBLIC);
+  private void generateCode(TypeElement typeElement) throws IOException {
+    String name = "St" + typeElement.getSimpleName().toString();
 
-        Map<String, ? extends Element> enclosedElements = allMembers(typeElement).stream()
-                .collect(Collectors.toMap(e -> e.getSimpleName().toString(), e -> e));
+    TypeSpec.Builder typeSpecBuilder = TypeSpec.interfaceBuilder(name)
+        .addModifiers(Modifier.PUBLIC);
 
-        for (Map.Entry<TypeMirror, TypeElement> entry : interfaces.entrySet()) {
-            boolean equals = true;
-            TypeMirror ifaceType = entry.getKey();
-            messager.printMessage(Diagnostic.Kind.NOTE, "Processing " + ifaceType.toString());
-            TypeElement thisType = entry.getValue();
+    Map<String, ? extends Element> enclosedElements = allMembers(typeElement).stream()
+        .collect(Collectors.toMap(e -> e.getSimpleName().toString(), e -> e));
+    TypeMirror structuralClazz = getClassParam(typeElement.getAnnotation(StructuralType.class));
 
-            //Ignore different clazz refs
-            TypeMirror inputClazz = getClassParam(thisType.getAnnotation(TypeOf.class));
-            if (typeElement.getAnnotation(StructuralType.class) == null) {
-                continue;
-            }
-            TypeMirror structuralClazz = getClassParam(typeElement.getAnnotation(StructuralType.class));
-            if (!structuralClazz.equals(inputClazz)) {
-                continue;
-            }
+    for (Map.Entry<TypeMirror, TypeElement> entry : interfaces.entrySet()) {
+      boolean equals = true;
+      TypeMirror ifaceType = entry.getKey();
+      messager.printMessage(Diagnostic.Kind.NOTE, "Processing " + ifaceType.toString());
+      TypeElement thisType = entry.getValue();
 
-            List<? extends Element> ifaceTypeElements = allMembers(thisType);
-            for (Element element : ifaceTypeElements) {
-                if (!enclosedElements.containsKey(element.getSimpleName().toString())) {
-                    equals = false;
-                    break;
-                }
+      //Ignore different clazz refs
+      TypeMirror inputClazz = getClassParam(thisType.getAnnotation(TypeOf.class));
+      if (typeElement.getAnnotation(StructuralType.class) == null) {
+        continue;
+      }
+      if (!structuralClazz.equals(inputClazz)) {
+        continue;
+      }
 
-                Element enclosedElement = enclosedElements.get(element.getSimpleName().toString());
-                Symbol.MethodSymbol enclosedMethodSymbol = (Symbol.MethodSymbol) enclosedElement;
-                Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) element;
-                if (enclosedMethodSymbol.params().length() != methodSymbol.params().length()) {
-                    equals = false;
-                    break;
-                }
-                for (int i = 0; i < methodSymbol.params().length(); i++) {
-                    if (!typeUtils.isSameType(methodSymbol.params().get(i).asType(), enclosedMethodSymbol.params().get(i).asType())) {
-                        equals = false;
-                        break;
-                    }
-                }
-            }
-            if (equals && !ifaceTypeElements.isEmpty()) { // do not allow empty (marker) interface to sneak here
-                typeSpecBuilder.addSuperinterface(TypeName.get(ifaceType));
-            }
+      List<? extends Element> ifaceTypeElements = allMembers(thisType);
+      for (Element element : ifaceTypeElements) {
+        if (!enclosedElements.containsKey(element.getSimpleName().toString())) {
+          equals = false;
+          break;
         }
 
-        TypeSpec typeSpec = typeSpecBuilder.build();
-
-        JavaFile.builder(((Symbol.ClassSymbol) typeElement).packge().fullname.toString(), typeSpec)
-                .build()
-                .writeTo(filer);
+        Element enclosedElement = enclosedElements.get(element.getSimpleName().toString());
+        Symbol.MethodSymbol enclosedMethodSymbol = (Symbol.MethodSymbol) enclosedElement;
+        Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) element;
+        if (enclosedMethodSymbol.params().length() != methodSymbol.params().length()) {
+          equals = false;
+          break;
+        }
+        for (int i = 0; i < methodSymbol.params().length(); i++) {
+          if (!typeUtils.isSameType(methodSymbol.params().get(i).asType(),
+              enclosedMethodSymbol.params().get(i).asType())) {
+            equals = false;
+            break;
+          }
+        }
+      }
+      if (equals && !ifaceTypeElements
+          .isEmpty()) { // do not allow empty (marker) interface to sneak here
+        typeSpecBuilder.addSuperinterface(TypeName.get(ifaceType));
+      }
     }
 
-    @Override
-    public Set<String> getSupportedAnnotationTypes() {
-        Set<String> types = new HashSet<>();
-        types.add(StructuralType.class.getCanonicalName());
-        return types;
-    }
+    TypeSpec typeSpec = typeSpecBuilder.build();
 
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.latestSupported();
-    }
+    JavaFile.builder(((Symbol.ClassSymbol) typeElement).packge().fullname.toString(), typeSpec)
+        .build()
+        .writeTo(filer);
+  }
+
+  @Override
+  public Set<String> getSupportedAnnotationTypes() {
+    Set<String> types = new HashSet<>();
+    types.add(StructuralType.class.getCanonicalName());
+    return types;
+  }
+
+  @Override
+  public SourceVersion getSupportedSourceVersion() {
+    return SourceVersion.latestSupported();
+  }
 }
