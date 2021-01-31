@@ -9,19 +9,6 @@ and pairs them with the @StructuralType output type.
 
 ```java
 class Main {
-  public static void main(String[] args) {
-    FooFragment fooFragment = getFooFragment();
-    print(fooFragment);
-  }
-
-  public void print(FooInput fooInput) {
-    System.out.println(fooInput.getUuid());
-  }
-
-  public FooFragment getFooFragment() {
-    return new FooFragment();
-  }
-
   @TypeOf(clazz = "Foo")
   public interface FooInput {
     UUID getUuid();
@@ -33,6 +20,19 @@ class Main {
     public UUID getUuid() {
       return uuid;
     }
+  }
+
+  public static void main(String[] args) {
+    FooFragment fooFragment = getFooFragment();
+    print(fooFragment);
+  }
+
+  public void print(FooInput fooInput) {
+    System.out.println(fooInput.getUuid());
+  }
+
+  public FooFragment getFooFragment() {
+    return new FooFragment();
   }
 }
 
