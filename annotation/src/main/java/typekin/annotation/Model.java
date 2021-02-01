@@ -8,5 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
 public @interface Model {
-  Class clazz();
+  String name() default "St%sModel";
+  String refName() default "St%sRef";
+  String implName() default "St%sModelImpl";
 }

@@ -7,36 +7,37 @@ import typekin.annotation.StructuralType;
 import typekin.annotation.TypeOf;
 
 public class FooExample {
-  @Model(clazz = Foo.class)
-  abstract class Foo implements StFooModel {
+  @Model(name = "FooModel", implName = "FooImpl", refName = "FooRef")
+  abstract class Foo implements FooModel {
     public abstract String getA();
     public abstract String getB();
     public abstract String getC();
-    public abstract List<? extends StBarRef> getBar();
+    public abstract List<? extends BarRef> getBar();
     public abstract void test();
   }
-  @Model(clazz = Bar.class)
-  abstract class Bar implements StBarModel {
+  @Model(name = "BarModel", implName = "BarImpl", refName = "BarRef")
+  abstract class Bar implements BarModel {
     public abstract String getA();
     public abstract String getB();
-    public abstract StFooRef getFoo();
+    public abstract FooRef getFoo();
   }
-  @TypeOf(clazz = Foo.class)
+
+  @TypeOf(model = Foo.class)
   public interface FooAFragment {
     String getA();
     List<? extends BarFragment> getBar();
   }
-  @TypeOf(clazz = Foo.class)
+  @TypeOf(model = Foo.class)
   public interface FooABFragment {
     String getA();
     String getB();
     List<? extends BarFragment> getBar();
   }
-  @TypeOf(clazz = Foo.class)
+  @TypeOf(model = Foo.class)
   public interface FooCFragment {
     String getC();
   }
-  @TypeOf(clazz = Bar.class)
+  @TypeOf(model = Bar.class)
   public interface BarFragment {
     String getA();
   }
@@ -47,24 +48,24 @@ public class FooExample {
   //}
 
   //You add `implements St{name}`
-  @StructuralType(clazz = Foo.class)
-  public static class FooAData implements StFooAData {
+  @StructuralType(model = Foo.class, name = "FooADataType")
+  public static class FooAData implements FooADataType {
     public String getA() { return "A"; }
-    public List<BarData> getBar() {return new ArrayList<>();}
+    public List<BarADataType> getBar() {return new ArrayList<>();}
     public String extraParam() {return "extra";}
   }
-  @StructuralType(clazz = Foo.class)
-  public static class FooABData implements StFooABData {
+  @StructuralType(model = Foo.class, name = "FooABDataType")
+  public static class FooABData implements FooABDataType {
     public String getA() { return "A"; }
     public String getB() { return "B"; }
-    public List<BarData> getBar() {return new ArrayList<>();}
+    public List<BarADataType> getBar() {return new ArrayList<>();}
   }
-  @StructuralType(clazz = Foo.class)
-  public static class FooCData implements StFooCData {
+  @StructuralType(model = Foo.class, name = "FooCDataType")
+  public static class FooCData implements FooCDataType {
     public String getC() { return "C"; }
   }
-  @StructuralType(clazz = Bar.class)
-  public static class BarData implements StBarData {
+  @StructuralType(model = Bar.class, name = "BarADataType")
+  public static class BarAData implements BarADataType {
     public String getA() { return "A"; }
   }
 

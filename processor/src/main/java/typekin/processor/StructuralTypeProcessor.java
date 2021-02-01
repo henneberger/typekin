@@ -1,12 +1,13 @@
 package typekin.processor;
 
-import static typekin.processor.ModelProcessor.getClassParam;
+import static typekin.processor.Conversions.getTypeMirror;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.tools.javac.code.Symbol;
+import typekin.annotation.Model;
 import typekin.annotation.StructuralType;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -40,7 +41,6 @@ public class StructuralTypeProcessor extends AbstractProcessor {
   private Elements elementUtils;
   private Filer filer;
   private Messager messager;
-  private Map<TypeMirror, TypeElement> interfaces = new HashMap<>();
 
   @Override
   public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -61,6 +61,8 @@ public class StructuralTypeProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
+    Map<TypeMirror, TypeElement> interfaces = new HashMap<>();
+
     for (Element element : roundEnvironment.getElementsAnnotatedWith(TypeOf.class)) {
       TypeElement typeElement = (TypeElement) element;
       interfaces.put(typeElement.asType(), typeElement);
@@ -75,7 +77,7 @@ public class StructuralTypeProcessor extends AbstractProcessor {
       TypeElement typeElement = (TypeElement) element;
       messager.printMessage(Diagnostic.Kind.NOTE, typeElement.getQualifiedName());
       try {
-        generateCode(typeElement);
+        generateCode(typeElement, interfaces);
       } catch (IOException e) {
         messager.printMessage(Diagnostic.Kind.ERROR, e.getMessage());
       }
@@ -84,15 +86,17 @@ public class StructuralTypeProcessor extends AbstractProcessor {
     return true;
   }
 
-  private void generateCode(TypeElement typeElement) throws IOException {
-    String name = "St" + typeElement.getSimpleName().toString();
+  private void generateCode(TypeElement typeElement,
+      Map<TypeMirror, TypeElement> interfaces) throws IOException {
+    String nameFormat = typeElement.getAnnotation(StructuralType.class).name();
+    String name = String.format(nameFormat, typeElement.getSimpleName().toString());
 
     TypeSpec.Builder typeSpecBuilder = TypeSpec.interfaceBuilder(name)
         .addModifiers(Modifier.PUBLIC);
 
     Map<String, ? extends Element> enclosedElements = allMembers(typeElement).stream()
         .collect(Collectors.toMap(e -> e.getSimpleName().toString(), e -> e));
-    TypeMirror structuralClazz = getClassParam(typeElement.getAnnotation(StructuralType.class));
+    TypeMirror structuralClazz = getTypeMirror(typeElement.getAnnotation(StructuralType.class));
 
     for (Map.Entry<TypeMirror, TypeElement> entry : interfaces.entrySet()) {
       boolean equals = true;
@@ -101,7 +105,7 @@ public class StructuralTypeProcessor extends AbstractProcessor {
       TypeElement thisType = entry.getValue();
 
       //Ignore different clazz refs
-      TypeMirror inputClazz = getClassParam(thisType.getAnnotation(TypeOf.class));
+      TypeMirror inputClazz = getTypeMirror(thisType.getAnnotation(TypeOf.class));
       if (typeElement.getAnnotation(StructuralType.class) == null) {
         continue;
       }

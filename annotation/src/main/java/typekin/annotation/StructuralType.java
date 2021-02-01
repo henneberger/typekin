@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
 public @interface StructuralType {
-  Class clazz();
+  Class model();
+  String name() default "St%s";
 }

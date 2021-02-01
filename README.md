@@ -1,11 +1,7 @@
 # Object Graphs and Structural Typing in Java
 
-This gives Java a way to handle pieces of a graph in a type safe way without a lot of object
-duplication. Types are determined at compile time through code generating annotations and are 
-linked based on their structural type equivalent.
-
-The annotation processor determines all the structurally equivalent types @TypeOf for each type 
-and pairs them with the @StructuralType output type.
+This gives Java a way to handle partial representations of data model while remaining type safe. 
+Types are generated at compile time via annotations and are based on usage.
 
 ```java
 public class Main {
@@ -13,7 +9,7 @@ public class Main {
   //  annotations must match this structure.
   //
   // You add `implements St{name}Model`
-  @Model(clazz = Foo.class)
+  @Model
   abstract class Foo implements StFooModel {
     public abstract String getA();
     public abstract String getB();
@@ -21,16 +17,16 @@ public class Main {
   }
 
   //A subset of the model (for code reuse)
-  @TypeOf(clazz = Foo.class)
+  @TypeOf(model = Foo.class)
   public interface FooAFragment {
     String getA();
   }
-  @TypeOf(clazz = Foo.class)
+  @TypeOf(model = Foo.class)
   public interface FooABFragment {
     String getA();
     String getB();
   }
-  @TypeOf(clazz = Foo.class)
+  @TypeOf(model = Foo.class)
   public interface FooCFragment {
     String getC();
   }
@@ -45,16 +41,16 @@ public class Main {
   //  will be associated with TypeOf objects.
   //
   // You add `implements St{name}`
-  @StructuralType(clazz = Foo.class)
+  @StructuralType(model = Foo.class)
   public static class FooAData implements StFooAData {
     public String getA() { return "A"; }
   }
-  @StructuralType(clazz = Foo.class)
+  @StructuralType(model = Foo.class)
   public static class FooABData implements StFooABData {
     public String getA() { return "A"; }
     public String getB() { return "B"; }
   }
-  @StructuralType(clazz = Foo.class)
+  @StructuralType(model = Foo.class)
   public static class FooCData implements StFooCData {
     public String getC() { return "C"; }
   }
@@ -80,6 +76,25 @@ interface StFooCData extends FooCFragment {}
 interface StFooModel extends FooAFragment, FooABFragment, FooCFragment {}
 interface StFooRef extends StFooAData, StFooABData, StFooCData {}
 ```
+
+### `@Model`
+A class that defines the data model. All abstract methods will be recognized.
+Parameters:
+- `name`: The name of the class it will generate
+- `refName`: The name of the class it will generate for data model relationships
+- `concreteName`: The name of the empty concrete class for jvm type validation
+### `@TypeOf`
+Interface classes that represent a partial representation of the model. 
+Parameters:
+- `model`: The class of the model
+### `@StructuralType`
+A concrete type that contains data. This can contain any data but only method signatures 
+that match the model will be validated.
+Parameters:
+- `name`: The name of the class it will generate
+- `model`: The class of the model
+
+
 
 This can be extended to non-trivial examples:
 [tests/src/main/java/typekin/tests/example/FooExample.java](tests/src/main/java/typekin/tests/example/FooExample.java)
