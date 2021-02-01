@@ -150,4 +150,4 @@ A full example can be found here:
 Since it relies on compile time annotations, other annotations may not work with Typekin.
 
 ### Contributions
-This work is inspiried from https://github.com/tlamr/stjava
+This work is inspiried by https://github.com/tlamr/stjava
