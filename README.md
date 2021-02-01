@@ -1,7 +1,7 @@
 # Object Graphs and Structural Typing in Java
 
 This gives Java a way to handle partial representations of data model while remaining type safe. 
-Types are generated at compile time via annotations and are based on usage.
+Types are generated at compile time via annotations.
 
 ```java
 public class Main {
