@@ -80,8 +80,7 @@ interface StFooRef extends StFooAData, StFooABData, StFooCData {}
 ### `@Model`
 The `@Model` annotation defines the data model. All `@TypeOf` model fragments that 
 refer to a `@Model` class will be strongy typed. Only abstract methods will be recognized
-for type candidates. For nested objects, a generated class that serves as a type reference
-can be utilized.
+for type candidates. For nested objects, a generated `Ref` class serves as a type reference.
 Parameters:
 - `name`: The name of the class it will generate
 - `refName`: The name of the class it will generate for data model relationships
