@@ -1,7 +1,7 @@
-package typekin.processor;
+package typekin.processor.generators;
 
-import static typekin.processor.Conversions.toSuperInterface;
-import static typekin.processor.Conversions.getTypeMirror;
+import static typekin.processor.util.Conversions.toSuperInterface;
+import static typekin.processor.util.Conversions.getTypeMirror;
 
 import com.squareup.javapoet.TypeSpec;
 import java.util.LinkedHashSet;
@@ -32,7 +32,7 @@ public class ModelInterfaceGenerator {
     return typeSpec;
   }
 
-  private Set<? extends Element> getMatchingTypeOfElements(TypeElement typeElement,
+  public static Set<? extends Element> getMatchingTypeOfElements(TypeElement typeElement,
       RoundEnvironment roundEnvironment) {
     TypeMirror modelType = typeElement.asType();
     Set<TypeElement> set = new LinkedHashSet<>();

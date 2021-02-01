@@ -18,6 +18,9 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import typekin.annotation.Model;
+import typekin.processor.generators.ModelImplGenerator;
+import typekin.processor.generators.ModelInterfaceGenerator;
+import typekin.processor.generators.ModelRefGenerator;
 
 @AutoService(Processor.class)
 public class ModelProcessor extends AbstractProcessor {

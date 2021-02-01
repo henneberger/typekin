@@ -1,4 +1,4 @@
-package typekin.processor;
+package typekin.processor.util;
 
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;

@@ -42,7 +42,7 @@ public class FooExample {
     String getA();
   }
   //compile error on Model, D is not a property of Foo
-  //@TypeOf(clazz = Foo.class)
+  //@TypeOf(model = Foo.class)
   //public interface FooDFragment {
   //  String getD();
   //}

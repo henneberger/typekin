@@ -1,6 +1,6 @@
-package typekin.processor;
+package typekin.processor.generators;
 
-import static typekin.processor.Conversions.getTypeMirror;
+import static typekin.processor.util.Conversions.getTypeMirror;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;

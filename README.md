@@ -78,7 +78,7 @@ interface StFooRef extends StFooAData, StFooABData, StFooCData {}
 ```
 
 ### `@Model`
-A class that defines the data model. All abstract methods will be recognized.
+An abstract class that defines the data model. All abstract methods will be recognized.
 Parameters:
 - `name`: The name of the class it will generate
 - `refName`: The name of the class it will generate for data model relationships

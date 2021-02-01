@@ -1,7 +1,7 @@
-package typekin.processor;
+package typekin.processor.generators;
 
-import static typekin.processor.Conversions.toParameter;
-import static typekin.processor.Conversions.toReturnType;
+import static typekin.processor.util.Conversions.toParameter;
+import static typekin.processor.util.Conversions.toReturnType;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
