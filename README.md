@@ -117,7 +117,7 @@ public interface FooFragment {
 @TypeOf(model = Bar.class)
 public interface BarFragment {
   String getA();
-  Foo getFoo();
+  FooFragment getFoo();
 }
 ```
 
