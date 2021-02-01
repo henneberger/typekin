@@ -5,7 +5,7 @@ Types are generated at compile time via annotations.
 
 ```java
 public class Main {
-  // The model definition file. All TypeOf
+  // The optional model definition. If present, all TypeOf
   //  annotations must match this structure.
   //
   // You add `implements St{name}Model`
@@ -37,8 +37,8 @@ public class Main {
   //}
 
   // A container of data that can contain any data.
-  //  Function signatures that are used in the model
-  //  will be associated with TypeOf objects.
+  //  Function signatures are used to determine
+  //  equivalence classes with TypeOf classes.
   //
   // You add `implements St{name}`
   @StructuralType(model = Foo.class)
@@ -78,26 +78,77 @@ interface StFooRef extends StFooAData, StFooABData, StFooCData {}
 ```
 
 ### `@Model`
-An abstract class that defines the data model. All abstract methods will be recognized.
+The `@Model` annotation defines the data model. All `@TypeOf` model fragments that 
+refer to a `@Model` class will be strongy typed. Only abstract methods will be recognized
+for type candidates. For nested objects, a generated class that serves as a type reference
+can be utilized.
 Parameters:
 - `name`: The name of the class it will generate
 - `refName`: The name of the class it will generate for data model relationships
 - `concreteName`: The name of the empty concrete class for jvm type validation
+
+E.g.
+```java
+@Model(name = "FooModel", refName = "FooRef")
+abstract class Foo implements FooModel {
+  public abstract String getA();
+  public abstract List<BarRef> getBar();
+}
+
+@Model(name = "BarModel", refName = "BarRef")
+abstract class Bar implements BarModel {
+  public abstract String getA();
+  public abstract FooRef getFoo();
+}
+```
+
 ### `@TypeOf`
-Interface classes that represent a partial representation of the model. 
+The `@TypeOf` annotation defines a partial representation of the data model. All `@StructuralType`
+classes that have the same model class are compared structurally to all `@TypeOf` interfaces.
 Parameters:
 - `model`: The class of the model
+
+E.g:
+```java
+@TypeOf(model = Foo.class)
+public interface FooFragment {
+  String getA();
+  List<? extends BarFragment> getBar();
+}
+@TypeOf(model = Bar.class)
+public interface BarFragment {
+  String getA();
+  Foo getFoo();
+}
+```
+
 ### `@StructuralType`
 A concrete type that contains data. This can contain any data but only method signatures 
-that match the model will be validated.
+that match the model will be used as candidates for `@TypeOf` classes.
 Parameters:
-- `name`: The name of the class it will generate
 - `model`: The class of the model
+- `name`: The name of the class it will generate
 
+E.g.
+```java
+@StructuralType(model = Foo.class, name = "FooDataType")
+public class FooData extends FooDataType {
+  public String getA() { return null; }
+  public List<BarData> getBar() { return null; }
+  public String extraParam() { return null; } //ok
+}
+@StructuralType(model = Bar.class, name = "BarDataType")
+public class BarData extends BarDataType {
+  public String getA() { return null; }
+  public Foo getFoo() { return null; }
+}
+```
 
-
-This can be extended to non-trivial examples:
+A full example can be found here:
 [tests/src/main/java/typekin/tests/example/FooExample.java](tests/src/main/java/typekin/tests/example/FooExample.java)
 
+### Limitations
+Since it relies on compile time annotations, other annotations may not work with Typekin.
+
 ### Contributions
-This work is based on https://github.com/tlamr/stjava
+This work is inspiried from https://github.com/tlamr/stjava
