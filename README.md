@@ -9,7 +9,7 @@ Types are generated at compile time via annotations.
 	<dependency>
 		<groupId>com.github.henneberger</groupId>
 		<artifactId>typekin-processor</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.2</version>
 		<scope>provided</scope>
 	</dependency>
 </dependencies>
