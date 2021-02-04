@@ -153,7 +153,7 @@
                             <aggregate>true</aggregate>
                             <charset>${chartset.UTF8}</charset>
                             <docencoding>${chartset.UTF8}</docencoding>
-                            <excludePackageNames>com.github.henneberger</excludePackageNames>
+                            <excludePackageNames>com.github.henneberger.typekin.processor</excludePackageNames>
                         </configuration>
                         <executions>
                             <execution>
