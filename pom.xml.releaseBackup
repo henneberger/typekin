@@ -6,7 +6,7 @@
 
     <groupId>com.github.henneberger</groupId>
     <artifactId>typekin</artifactId>
-    <version>1.0.0</version>
+    <version>0.1-SNAPSHOT</version>
     <name>Typekin</name>
     <packaging>pom</packaging>
 
