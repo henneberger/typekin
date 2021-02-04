@@ -7,7 +7,7 @@ Types are generated at compile time via annotations.
 ```xml
 <dependencies>
 	<dependency>
-		<groupId>com.danielhenneberger</groupId>
+		<groupId>com.github.henneberger</groupId>
 		<artifactId>typekin-processor</artifactId>
 		<version>1.0.0</version>
 		<scope>provided</scope>
