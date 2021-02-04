@@ -1,5 +1,8 @@
-package typekin.processor;
+package com.github.henneberger.typekin.processor;
 
+import com.github.henneberger.typekin.processor.generators.ModelImplGenerator;
+import com.github.henneberger.typekin.processor.generators.ModelInterfaceGenerator;
+import com.github.henneberger.typekin.processor.generators.ModelRefGenerator;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
@@ -17,10 +20,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-import typekin.annotation.Model;
-import typekin.processor.generators.ModelImplGenerator;
-import typekin.processor.generators.ModelInterfaceGenerator;
-import typekin.processor.generators.ModelRefGenerator;
+import com.github.henneberger.typekin.annotation.Model;
 
 @AutoService(Processor.class)
 public class ModelProcessor extends AbstractProcessor {
@@ -41,7 +41,8 @@ public class ModelProcessor extends AbstractProcessor {
       TypeElement typeElement = (TypeElement) element;
 
       TypeSpec modelImplTypeSpec = ModelImplGenerator.generate(typeElement, roundEnvironment);
-      TypeSpec modelInterfaceTypeSpec = ModelInterfaceGenerator.generate(typeElement, roundEnvironment);
+      TypeSpec modelInterfaceTypeSpec = ModelInterfaceGenerator
+          .generate(typeElement, roundEnvironment);
       TypeSpec modelRefTypeSpec = ModelRefGenerator.generate(typeElement, roundEnvironment);
       writeFile(typeElement, modelImplTypeSpec, modelInterfaceTypeSpec, modelRefTypeSpec);
     }

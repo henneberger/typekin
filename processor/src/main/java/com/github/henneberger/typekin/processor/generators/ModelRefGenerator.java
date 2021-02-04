@@ -1,6 +1,6 @@
-package typekin.processor.generators;
+package com.github.henneberger.typekin.processor.generators;
 
-import static typekin.processor.util.Conversions.getTypeMirror;
+import static com.github.henneberger.typekin.processor.util.Conversions.getTypeMirror;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -15,8 +15,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import typekin.annotation.Model;
-import typekin.annotation.StructuralType;
+import com.github.henneberger.typekin.annotation.Model;
+import com.github.henneberger.typekin.annotation.StructuralType;
 
 public class ModelRefGenerator {
 

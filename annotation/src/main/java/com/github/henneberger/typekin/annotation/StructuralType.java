@@ -1,4 +1,4 @@
-package typekin.annotation;
+package com.github.henneberger.typekin.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

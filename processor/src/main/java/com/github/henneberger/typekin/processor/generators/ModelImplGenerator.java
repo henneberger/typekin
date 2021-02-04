@@ -1,8 +1,6 @@
-package typekin.processor.generators;
+package com.github.henneberger.typekin.processor.generators;
 
-import static typekin.processor.util.Conversions.toParameter;
-import static typekin.processor.util.Conversions.toReturnType;
-
+import com.github.henneberger.typekin.processor.util.Conversions;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -19,7 +17,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
-import typekin.annotation.Model;
+import com.github.henneberger.typekin.annotation.Model;
 
 public class ModelImplGenerator {
 
@@ -59,7 +57,7 @@ public class ModelImplGenerator {
 
   private MethodSpec generateConcreteField(MethodSymbol element) {
     return MethodSpec.methodBuilder(element.getQualifiedName().toString())
-        .returns(toReturnType(element))
+        .returns(Conversions.toReturnType(element))
         .addModifiers(Modifier.PUBLIC)
         .addParameters(toParameters(element))
         .addCode("return null;")
@@ -68,7 +66,7 @@ public class ModelImplGenerator {
 
   private MethodSpec generateVoidConcreteField(MethodSymbol element) {
     return MethodSpec.methodBuilder(element.getQualifiedName().toString())
-        .returns(toReturnType(element))
+        .returns(Conversions.toReturnType(element))
         .addModifiers(Modifier.PUBLIC)
         .addParameters(toParameters(element))
         .build();
@@ -77,7 +75,7 @@ public class ModelImplGenerator {
   private Iterable<ParameterSpec> toParameters(MethodSymbol element) {
     List<ParameterSpec> parameterSpecs = new ArrayList<>();
     for (VarSymbol symbol : element.getParameters()) {
-      parameterSpecs.add(toParameter(symbol, Modifier.FINAL));
+      parameterSpecs.add(Conversions.toParameter(symbol, Modifier.FINAL));
     }
     return parameterSpecs;
   }

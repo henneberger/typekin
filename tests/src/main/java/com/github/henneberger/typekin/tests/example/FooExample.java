@@ -1,10 +1,10 @@
-package typekin.tests.example;
+package com.github.henneberger.typekin.tests.example;
 
 import java.util.ArrayList;
 import java.util.List;
-import typekin.annotation.Model;
-import typekin.annotation.StructuralType;
-import typekin.annotation.TypeOf;
+import com.github.henneberger.typekin.annotation.Model;
+import com.github.henneberger.typekin.annotation.StructuralType;
+import com.github.henneberger.typekin.annotation.TypeOf;
 
 public class FooExample {
   @Model(name = "FooModel", implName = "FooImpl", refName = "FooRef")

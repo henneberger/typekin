@@ -3,6 +3,20 @@
 This gives Java a way to handle partial representations of data model while remaining type safe. 
 Types are generated at compile time via annotations.
 
+## Getting started
+```xml
+<dependencies>
+	<dependency>
+		<groupId>com.danielhenneberger</groupId>
+		<artifactId>typekin-processor</artifactId>
+		<version>1.0.0</version>
+		<scope>provided</scope>
+	</dependency>
+</dependencies>
+```
+
+## Example Usage
+
 ```java
 public class Main {
   // The optional model definition. If present, all TypeOf

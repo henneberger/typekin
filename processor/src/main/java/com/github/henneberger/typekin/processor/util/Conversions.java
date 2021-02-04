@@ -1,4 +1,4 @@
-package typekin.processor.util;
+package com.github.henneberger.typekin.processor.util;
 
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
@@ -11,8 +11,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
-import typekin.annotation.StructuralType;
-import typekin.annotation.TypeOf;
+import com.github.henneberger.typekin.annotation.StructuralType;
+import com.github.henneberger.typekin.annotation.TypeOf;
 
 public class Conversions {
 

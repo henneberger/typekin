@@ -1,8 +1,8 @@
-package typekin.processor;
+package com.github.henneberger.typekin.processor;
 
-import static typekin.processor.util.Conversions.getTypeMirror;
-import static typekin.processor.util.Conversions.toSuperInterface;
+import static com.github.henneberger.typekin.processor.util.Conversions.getTypeMirror;
 
+import com.github.henneberger.typekin.processor.util.Conversions;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
@@ -32,8 +32,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-import typekin.annotation.StructuralType;
-import typekin.annotation.TypeOf;
+import com.github.henneberger.typekin.annotation.StructuralType;
+import com.github.henneberger.typekin.annotation.TypeOf;
 
 @AutoService(Processor.class)
 public class StructuralTypeProcessor extends AbstractProcessor {
@@ -91,18 +91,18 @@ public class StructuralTypeProcessor extends AbstractProcessor {
 
     return TypeSpec.interfaceBuilder(name)
         .addModifiers(Modifier.PUBLIC)
-        .addSuperinterfaces(toSuperInterface(
+        .addSuperinterfaces(Conversions.toSuperInterface(
             getMatchingElements(typeElement, roundEnvironment)))
         .build();
   }
 
   public Set<? extends Element> getMatchingElements(TypeElement structuralTypeElement,
       RoundEnvironment roundEnvironment) {
-    TypeMirror typeMirror = getTypeMirror(structuralTypeElement.getAnnotation(StructuralType.class));
+    TypeMirror typeMirror = Conversions.getTypeMirror(structuralTypeElement.getAnnotation(StructuralType.class));
     Set<TypeElement> set = new LinkedHashSet<>();
     for (Element element : roundEnvironment.getElementsAnnotatedWith(TypeOf.class)) {
       TypeElement typeOfElement = (TypeElement) element;
-      if (typeMirror != getTypeMirror(typeOfElement.getAnnotation(TypeOf.class))) {
+      if (typeMirror != Conversions.getTypeMirror(typeOfElement.getAnnotation(TypeOf.class))) {
         continue;
       }
 
