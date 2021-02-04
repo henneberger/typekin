@@ -36,12 +36,6 @@
         <developerConnection>scm:git:https://github.com/henneberger/typekin.git</developerConnection>
     </scm>
     <dependencies>
-        <dependency>
-            <groupId>com.github.henneberger</groupId>
-            <artifactId>typekin-annotation</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-
         <!-- Java Poet to generate java files -->
         <dependency>
             <groupId>com.squareup</groupId>
