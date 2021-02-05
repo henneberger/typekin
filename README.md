@@ -158,7 +158,7 @@ public class BarData extends BarDataType {
 ```
 
 A full example can be found here:
-[tests/src/main/java/typekin/tests/example/FooExample.java](tests/src/main/java/typekin/tests/example/FooExample.java)
+[tests/src/main/java/com/github/henneberger/typekin/tests/example/FooExample.java](tests/src/main/java/com/github/henneberger/typekin/tests/example/FooExample.java)
 
 ### Limitations
 Since it relies on compile time annotations, other annotations may not work with Typekin.
